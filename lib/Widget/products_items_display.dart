@@ -131,7 +131,7 @@ class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         children: [
                           TextSpan(
-                            text: "${widget.foodModel.price}",
+                            text: "${widget.foodModel.price.toInt()}",
                             style: const TextStyle(
                               fontSize: 25,
                               color: Colors.black,
