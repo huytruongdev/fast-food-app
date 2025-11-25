@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Service/auth_service.dart';
-
+AuthService authService = AuthService();
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -9,7 +9,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  AuthService authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

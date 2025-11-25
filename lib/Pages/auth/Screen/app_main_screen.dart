@@ -1,3 +1,4 @@
+import 'package:fast_food_app/Pages/auth/Screen/User_Activity/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Pages/auth/Screen/food_app_home_screen.dart';
@@ -16,7 +17,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
   int currentInex = 0;
   final List<Widget> _pages = [
     FoodAppHomeScreen(),
-    Scaffold(),
+    FavoriteScreen(),
     ProfileScreen(),
     Scaffold(),
 
