@@ -1,3 +1,4 @@
+import 'package:fast_food_app/Pages/auth/Screen/User_Activity/cart_screen.dart';
 import 'package:fast_food_app/Pages/auth/Screen/User_Activity/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
     FoodAppHomeScreen(),
     FavoriteScreen(),
     ProfileScreen(),
-    Scaffold(),
-
+    CartScreen(),
   ];
   @override
   Widget build(BuildContext context) {

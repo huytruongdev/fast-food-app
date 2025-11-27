@@ -1,38 +1,33 @@
+import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fast_food_app/Core/Utils/consts.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
 import 'package:fast_food_app/Pages/auth/Screen/food_detail_screen.dart';
+import 'package:provider/provider.dart';
 
-
-class ProductsItemsDisplay extends StatefulWidget {
+class ProductsItemsDisplay extends StatelessWidget {
   final FoodModel foodModel;
+
   const ProductsItemsDisplay({super.key, required this.foodModel});
 
-  @override
-  State<ProductsItemsDisplay> createState() => _ProductsItemsDisplayState();
-}
-
-class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
-  static const double CARD_HEIGHT = 200;
+  static const double CARD_HEIGHT = 170;
   static const double CARD_WIDTH_FACTOR = 0.48;
-  // static const double IMAGE_HEIGHT = 100;
-  // static const double IMAGE_WIDTH = 200;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
 
     return SizedBox(
       width: size.width * CARD_WIDTH_FACTOR + 2,
       height: CARD_HEIGHT + 60,
-      // color: const Color.fromARGB(255, 223, 226, 228),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FoodDetailScreen(products: widget.foodModel),
+              builder: (context) => FoodDetailScreen(products: foodModel),
             ),
           );
         },
@@ -58,26 +53,36 @@ class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
                 ),
               ),
             ),
+
+            // ICON FIRE
             Positioned(
               top: 10,
-              right: 5,
+              right: -5,
               child: GestureDetector(
+                onTap: () {
+                  favoriteProvider.toggleFavorite(foodModel.productId);
+                },
                 child: CircleAvatar(
                   radius: 15,
-                  backgroundColor: Colors.red[100],
-                  child: Image.asset(
-                    "assets/food-delivery/icon/fire.png",
-                    height: 30,
-                  ),
+                  backgroundColor: favoriteProvider.isExist(foodModel.productId)
+                      ? Colors.red[100]
+                      : Colors.transparent,
+                  child: favoriteProvider.isExist(foodModel.productId)
+                      ? Image.asset(
+                          "assets/food-delivery/icon/fire.png",
+                          height: 25,
+                        )
+                      : Icon(Icons.local_fire_department, color: red),
                 ),
               ),
             ),
+            // IMAGE
             Positioned(
               top: -10,
               child: Hero(
-                tag: widget.foodModel.imageCard,
+                tag: foodModel.imageCard,
                 child: CachedNetworkImage(
-                  imageUrl: widget.foodModel.imageCard,
+                  imageUrl: foodModel.imageCard,
                   height: 180,
                   width: 160,
                   fit: BoxFit.contain,
@@ -92,18 +97,21 @@ class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
                 ),
               ),
             ),
+
+            // PRODUCT DETAILS
             Positioned(
               bottom: 20,
               child: SizedBox(
                 width: size.width * CARD_WIDTH_FACTOR,
                 child: Column(
                   children: [
-                    const SizedBox(height: 80), // chừa khoảng cho hình trồi lên
-                    // TÊN
+                    const SizedBox(height: 80),
+
+                    // NAME
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Text(
-                        widget.foodModel.name,
+                        foodModel.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -113,9 +121,10 @@ class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
                         ),
                       ),
                     ),
+
                     // SPECIAL ITEMS
                     Text(
-                      widget.foodModel.specialItems,
+                      foodModel.specialItems,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -125,13 +134,14 @@ class _ProductsItemsDisplayState extends State<ProductsItemsDisplay> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // GIÁ
+
+                    // PRICE
                     RichText(
                       text: TextSpan(
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         children: [
                           TextSpan(
-                            text: "${widget.foodModel.price.toInt()}",
+                            text: "${foodModel.price.toInt()}",
                             style: const TextStyle(
                               fontSize: 25,
                               color: Colors.black,

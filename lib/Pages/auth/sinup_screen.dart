@@ -23,7 +23,7 @@ class _SinupScreenState extends State<SinupScreen> {
     String password = passwordController.text.trim();
 
     if (!email.contains(".com")) {
-      showSnackBar(context, "Invalid email. It must contain .com");
+      showSnackBar(context, "Invalid email. It must contain .com", Colors.red);
       return;
     }
     setState(() {
@@ -35,7 +35,7 @@ class _SinupScreenState extends State<SinupScreen> {
       setState(() {
         isLoadin = false;
       });
-      showSnackBar(context, "Signup Successful! Now Turn to Login");
+      showSnackBar(context, "Signup Successful! Now Turn to Login", Colors.green);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => LoginScreen()),
@@ -44,7 +44,7 @@ class _SinupScreenState extends State<SinupScreen> {
       setState(() {
         isLoadin = false;
       });
-      showSnackBar(context, "Signup Failed: $result");
+      showSnackBar(context, "Signup Failed: $result", Colors.red);
     }
   }
 

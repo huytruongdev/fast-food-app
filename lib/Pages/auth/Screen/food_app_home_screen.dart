@@ -21,6 +21,7 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
   bool isLoading = false;
   late Future<List<Category>> _categoriesFuture;
 
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +65,7 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -100,10 +102,10 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     if (products.isEmpty) {
-      return const Center(child: Text("Không có sản phẩm nào"));
+      return const Center(child: Text("Không có sản phẩm nào theo Thể loại"));
     }
     return SizedBox(
-      height: 270, // Giả định chiều cao cố định cho danh sách ngang
+      height: 270, 
       child: ListView.builder(
         itemCount: products.length,
         scrollDirection: Axis.horizontal,

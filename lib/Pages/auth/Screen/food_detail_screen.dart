@@ -1,5 +1,8 @@
+import 'package:fast_food_app/Core/Provider/cart_provider.dart';
 import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:fast_food_app/Widget/snack_back.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
 import 'package:readmore/readmore.dart';
 
@@ -190,10 +193,23 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
-        elevation: 0,
         backgroundColor: Colors.transparent,
+        elevation: 0,
         label: MaterialButton(
-          onPressed: () {},
+          onPressed: () async {
+            String userId = "u001"; 
+            await Provider.of<CartProvider>(context, listen: false).addCart(
+              userId,
+              widget.products.productId,
+              widget.products.toMap(),
+              quantity,
+            );
+            showSnackBar(
+              context,
+              "${widget.products.name} added to cart!",
+              Colors.green,
+            );
+          },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),

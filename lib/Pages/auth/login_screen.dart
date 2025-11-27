@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoadin = false;
       });
-      showSnackBar(context, "Signup Failed: $result");
+      showSnackBar(context, "Signup Failed: $result", Colors.red);
     }
   }
 

@@ -24,7 +24,6 @@ class FavoriteProvider extends ChangeNotifier {
     }
   }
 
-  // Reset khi logout
   void reset() {
     _favoriteItems = [];
     notifyListeners();

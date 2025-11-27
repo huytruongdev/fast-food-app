@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Service/auth_service.dart';
+
 AuthService authService = AuthService();
-class ProfileScreen extends StatefulWidget {
+
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +14,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => authService.logout(context),
-              child: const Icon((Icons.exit_to_app)),
+              onPressed: () {
+                authService.logout(context);
+              },
+              child: const Icon(Icons.exit_to_app),
             ),
           ],
         ),

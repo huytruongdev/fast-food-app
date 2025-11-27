@@ -41,4 +41,22 @@ class FoodModel {
       description: json["description"] ?? "",
     );
   }
+  Map<String, dynamic> toMap() {
+  return {
+    "productId": productId,
+    "imageCard": imageCard,
+    "imageDetail": imageDetail,
+    "name": name,
+    "price": price,
+    "rate": rate,
+    "specialItems": specialItems,
+    "categoryId": categoryId,
+    "kcal": kcal,
+    "time": time,
+    "description": description,
+  };
 }
+
+
+}
+

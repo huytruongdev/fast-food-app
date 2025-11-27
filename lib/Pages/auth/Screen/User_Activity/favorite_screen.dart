@@ -28,15 +28,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     provider.addListener(_onFavoriteChanged);
 
     if (_favoriteProvider.favoriteItems.isNotEmpty) {
-    loadFavoriteProducts();
-  }
+      loadFavoriteProducts();
+    }
   }
 
   void _onFavoriteChanged() {
-
     if (mounted) {
       setState(() {
-        _loaded = false; 
+        _loaded = false;
       });
       loadFavoriteProducts();
     }
@@ -54,7 +53,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     if (provider.favoriteItems.isEmpty) {
       setState(() {
         products = [];
-        _loaded = true; 
+        _loaded = true;
       });
       return;
     }
@@ -83,41 +82,66 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     final provider = context.watch<FavoriteProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Favorite")),
-      body: Builder(
-        builder: (_) {
-          if (provider.favoriteItems.isEmpty) {
-            return const Center(child: Text("Bạn chưa thích sản phẩm nào"));
-          }
-
-          if (!_loaded || products.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final item = products[index];
-              return ListTile(
-                title: Text(item.name),
-                subtitle: Text("${item.price} VNĐ"),
-                leading: Image.network(item.imageCard, width: 60),
-                trailing: IconButton(
-                  icon: const Icon(Icons.favorite, color: Colors.red),
-                  onPressed: () async {
-                    await provider.toggleFavorite(item.productId);
-                    setState(() {
-                      products.removeWhere(
-                        (p) => p.productId == item.productId,
-                      );
-                    });
-                  },
-                ),
-              );
-            },
-          );
-        },
-      ),
+      appBar: AppBar(title: const Text("Favorites")),
+      body: _loaded == false
+          ? const Center(child: CircularProgressIndicator())
+          : provider.favoriteItems.isEmpty
+          ? const Center(child: Text("Bạn chưa thích sản phẩm nào"))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final item = products[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(8),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        item.imageCard,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    title: Text(
+                      item.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text("${item.price.toInt()} VNĐ"),
+                    trailing: IconButton(
+                      icon: Icon(
+                        provider.isExist(item.productId)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: () async {
+                        await provider.toggleFavorite(item.productId);
+                        setState(() {
+                          products.removeWhere(
+                            (p) => p.productId == item.productId,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
