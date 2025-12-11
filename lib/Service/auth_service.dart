@@ -1,10 +1,10 @@
 import 'package:fast_food_app/Core/Provider/cart_provider.dart';
 import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
-import 'package:fast_food_app/Pages/auth/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,15 +60,14 @@ class AuthService {
   }
 
 Future<void> logout(BuildContext context) async {
-  final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
+
   Provider.of<CartProvider>(context, listen: false).reset();
   Provider.of<FavoriteProvider>(context, listen: false).reset();
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => const LoginScreen()),
-    (route) => false,
-  );
+
+  Phoenix.rebirth(context);
+
 }
 
 }

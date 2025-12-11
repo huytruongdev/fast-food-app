@@ -2,17 +2,21 @@ import 'package:fast_food_app/Core/Provider/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:fast_food_app/Pages/auth/login_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-      ],
-      child: const MyApp(),
+    Phoenix(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+          ChangeNotifierProvider(create: (_) => CartProvider()),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }

@@ -197,17 +197,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         elevation: 0,
         label: MaterialButton(
           onPressed: () async {
-            String userId = "u001"; 
+            String userId = "u001";
             await Provider.of<CartProvider>(context, listen: false).addCart(
               userId,
               widget.products.productId,
               widget.products.toMap(),
               quantity,
             );
-            showSnackBar(
-              context,
-              "${widget.products.name} added to cart!",
-              Colors.green,
+            showAppSnackbar(
+              context: context,
+              type: SnackbarType.success,
+              description: "${widget.products.name} added to cart",
             );
           },
           shape: RoundedRectangleBorder(

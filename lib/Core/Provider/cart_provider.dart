@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fast_food_app/Core/models/cart_model.dart';
+import 'package:http/http.dart' as http;
+
 
 class CartProvider extends ChangeNotifier {
   final String baseUrl = "http://10.0.2.2:3000";
@@ -13,6 +15,14 @@ class CartProvider extends ChangeNotifier {
     0,
     (sum, item) => sum + ((item.productData['price'] ?? 0) * item.quantity),
   );
+
+  int get totalQuantity {
+    int total = 0;
+    for (var item in _items) {
+      total += item.quantity;
+    }
+    return total;
+  }
 
   void reset() {
     _items.clear();
@@ -36,6 +46,31 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> clearCart(String userId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/$userId"),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        _items = [];
+        notifyListeners();
+
+        print("Giỏ hàng của người dùng $userId đã được xóa thành công.");
+      } else {
+        print("Lỗi khi xóa giỏ hàng. Mã trạng thái: ${response.statusCode}");
+        print("Chi tiết lỗi: ${response.body}");
+        throw Exception("Không thể xóa giỏ hàng trên server.");
+      }
+    } catch (e) {
+      print("Lỗi kết nối khi xóa giỏ hàng: $e");
+      throw Exception("Lỗi mạng khi xóa giỏ hàng.");
+    }
+  }
+
   Future<void> addCart(
     String userId,
     String productId,
@@ -43,7 +78,6 @@ class CartProvider extends ChangeNotifier {
     int change,
   ) async {
     try {
-      // Tìm item trong cart
       final index = _items.indexWhere((item) => item.productId == productId);
 
       if (index != -1) {
