@@ -68,7 +68,6 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: appbarParts(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,12 +262,11 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
           ),
           GestureDetector(
             onTap: () {
-              // Chuyển sang màn hình khác
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      ViewAllScreen(products: products), // Thay bằng màn hình bạn muốn mở
+                  builder: (context) => const ViewAllScreen(),
+                      // ViewAllScreen(products: products), 
                 ),
               );
             },

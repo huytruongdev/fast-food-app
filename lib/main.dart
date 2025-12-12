@@ -1,4 +1,5 @@
 import 'package:fast_food_app/Core/Provider/cart_provider.dart';
+import 'package:fast_food_app/Core/Provider/products_pagination_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
@@ -12,6 +13,7 @@ void main() async {
     Phoenix(
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider(create: (_) => ProductPaginationProvider()),
           ChangeNotifierProvider(create: (_) => FavoriteProvider()),
           ChangeNotifierProvider(create: (_) => CartProvider()),
         ],
@@ -28,6 +30,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white, 
+      ),
       home: const LoginScreen(),
     );
   }

@@ -82,7 +82,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     final provider = context.watch<FavoriteProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Favorites")),
+      appBar: AppBar(title: const Text("Favorites"),backgroundColor: Colors.white,),
       body: _loaded == false
           ? const Center(child: CircularProgressIndicator())
           : provider.favoriteItems.isEmpty
@@ -93,6 +93,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               itemBuilder: (context, index) {
                 final item = products[index];
                 return Container(
+                  
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(

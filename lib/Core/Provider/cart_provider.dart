@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fast_food_app/Core/models/cart_model.dart';
-import 'package:http/http.dart' as http;
-
 
 class CartProvider extends ChangeNotifier {
   final String baseUrl = "http://10.0.2.2:3000";
