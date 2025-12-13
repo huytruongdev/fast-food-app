@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Don't have an acount !",
+                    "Don't have an account !",
                     style: TextStyle(fontSize: 18),
                   ),
                   GestureDetector(

@@ -1,3 +1,4 @@
+import 'package:fast_food_app/Core/Provider/cart_provider.dart';
 import 'package:fast_food_app/Pages/auth/Screen/User_Activity/cart_screen.dart';
 import 'package:fast_food_app/Pages/auth/Screen/User_Activity/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,8 @@ import 'package:fast_food_app/Pages/auth/Screen/food_app_home_screen.dart';
 import 'package:fast_food_app/Pages/auth/Screen/profile_screen.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppMainScreen extends StatefulWidget {
   const AppMainScreen({super.key});
@@ -22,6 +25,22 @@ class _AppMainScreenState extends State<AppMainScreen> {
     ProfileScreen(),
     CartScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initCartData();
+  }
+
+  Future<void> _initCartData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString("userId");
+    
+    if (userId != null && userId.isNotEmpty && mounted) {
+      Provider.of<CartProvider>(context, listen: false).loadCart(userId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,13 +64,19 @@ class _AppMainScreenState extends State<AppMainScreen> {
                 Positioned(
                   right: -7,
                   top: 16,
-                  child: CircleAvatar(
-                    backgroundColor: red,
-                    radius: 10,
-                    child: Text(
-                      "0",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
+                  child: Consumer<CartProvider>(
+                    builder: (context, cart, child) {
+                      if (cart.totalQuantity == 0) return const SizedBox();
+
+                      return CircleAvatar(
+                        backgroundColor: red,
+                        radius: 10,
+                        child: Text(
+                          "${cart.totalQuantity}",
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 Positioned(

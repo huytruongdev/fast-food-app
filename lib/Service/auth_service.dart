@@ -59,15 +59,15 @@ class AuthService {
     }
   }
 
-Future<void> logout(BuildContext context) async {
+  Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
+    await prefs.clear();
 
-  Provider.of<CartProvider>(context, listen: false).reset();
-  Provider.of<FavoriteProvider>(context, listen: false).reset();
+    Provider.of<CartProvider>(context, listen: false).reset();
+    Provider.of<FavoriteProvider>(context, listen: false).reset();
 
-  Phoenix.rebirth(context);
+    Phoenix.rebirth(context);
 
-}
+  }
 
 }
