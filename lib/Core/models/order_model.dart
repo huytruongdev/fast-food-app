@@ -1,10 +1,11 @@
+import 'package:fast_food_app/Core/models/order_item.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OrderModel {
   final String? id; 
   final String userId; 
-  final String item;
-  final int quantity;
+  final List<OrderItem> items;
+  final int totalQuantity;
   final int price;
   final LatLng pickupLocation;
   final LatLng deliveryLocation;
@@ -14,8 +15,8 @@ class OrderModel {
   OrderModel({
     this.id,
     required this.userId,
-    required this.item,
-    required this.quantity,
+    required this.items,
+    required this.totalQuantity,
     required this.price,
     required this.pickupLocation,
     required this.deliveryLocation,
@@ -27,8 +28,8 @@ class OrderModel {
     return {
       "id": id,
       "userId": userId,
-      "item": item,
-      "quantity": quantity,
+      "items": items.map((e) => e.toJson()).toList(),
+      "totalQuantity": totalQuantity,
       "price": price,
       "pickupLocation": {
         "lat": pickupLocation.latitude,
@@ -47,8 +48,10 @@ class OrderModel {
     return OrderModel(
       id: json["id"],
       userId: json["userId"],
-      item: json["item"],
-      quantity: json["quantity"],
+      items: (json["items"] as List<dynamic>)
+          .map((e) => OrderItem.fromJson(e))
+          .toList(),
+      totalQuantity: json["totalQuantity"],
       price: json["price"],
       pickupLocation: LatLng(
         json["pickupLocation"]["lat"],
