@@ -70,4 +70,9 @@ class AuthService {
 
   }
 
+  Future<String?> getCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userId');
+  }
+
 }

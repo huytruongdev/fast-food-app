@@ -11,6 +11,8 @@ class OrderModel {
   final LatLng deliveryLocation;
   final String pickupAddress;
   final String deliveryAddress;
+  final String? status;
+  final String? createdAt;
 
   OrderModel({
     this.id,
@@ -22,6 +24,8 @@ class OrderModel {
     required this.deliveryLocation,
     required this.pickupAddress,
     required this.deliveryAddress,
+    this.status,
+    this.createdAt,
   });
 
   Map<String, dynamic> toJson() {
@@ -63,6 +67,8 @@ class OrderModel {
       ),
       pickupAddress: json["pickupAddress"],
       deliveryAddress: json["deliveryAddress"],
+      status: json["status"],
+      createdAt: json['createdAt']
     );
   }
 }

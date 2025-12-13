@@ -1,3 +1,4 @@
+import 'package:fast_food_app/Pages/auth/Screen/User_Activity/track_order_screen.dart';
 import 'package:fast_food_app/Pages/auth/Screen/app_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Core/Utils/consts.dart';
@@ -114,14 +115,12 @@ class OrderDetailScreen extends StatelessWidget {
                   shape: const StadiumBorder(),
                 ),
                 onPressed: () {
-                  // Chuyển sang màn hình Map (DeliveryMapScreen)
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     // Truyền order vào Map nếu MapScreen hỗ trợ nhận OrderModel
-                  //     builder: (context) => const DeliveryMapScreen(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TrackOrderScreen(order: order,),
+                    ),
+                  );
                 },
                 child: const Text(
                   "Theo dõi đơn hàng (Track Order)",

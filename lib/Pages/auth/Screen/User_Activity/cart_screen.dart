@@ -138,8 +138,8 @@ class _CartScreenState extends State<CartScreen> {
 
   OrderModel _createOrderObject(CartProvider cart) {
     // TODO
-    final pickup = LatLng(10.762622, 106.660172);
-    final delivery = LatLng(10.794165, 106.688849);
+    final pickup = LatLng(10.800669, 106.661126); // lấy ở
+    final delivery = LatLng(10.7965184,106.6557884);
 
     List<OrderItem> orderItems = cart.items.map((item) {
       return OrderItem(
