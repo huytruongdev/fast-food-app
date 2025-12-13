@@ -57,7 +57,7 @@ class CartItemTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    formatVND(item.productData['price']), // Dùng hàm formatVND
+                    formatVND(item.productData['price']),
                     style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],

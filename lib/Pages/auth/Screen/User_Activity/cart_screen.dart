@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:fast_food_app/Core/models/order_item.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
 import 'package:fast_food_app/Core/Provider/cart_provider.dart';
+import 'package:fast_food_app/Pages/auth/Screen/User_Activity/order_detail_screen.dart';
 import 'package:fast_food_app/Widget/cart_bar.dart';
 import 'package:fast_food_app/Widget/cart_item_tile.dart';
 import 'package:flutter/material.dart';
@@ -110,8 +111,20 @@ class _CartScreenState extends State<CartScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _showMsg("Đặt hàng thành công!");
-        // cart.clearCart(); // Nên có hàm này trong provider
-        // Navigator.pop(context); // Hoặc chuyển trang
+        final responseData = jsonDecode(response.body);
+
+        final createdOrder = OrderModel.fromJson(responseData);
+
+        cart.clearCart(_userId);
+        
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrderDetailScreen(order: createdOrder),
+            ),
+          );
+        }
       } else {
         _showMsg("Lỗi Server: ${response.statusCode}", isError: true);
       }

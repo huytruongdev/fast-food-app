@@ -4,16 +4,18 @@ import 'package:http/http.dart' as http;
 import 'package:fast_food_app/Core/models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
-  final String baseUrl = "http://10.0.2.2:3000";
+  final String baseUrl = "http://10.0.2.2:3000"; 
 
   List<CartItem> _items = [];
   List<CartItem> get items => _items;
 
+  // Tính tổng tiền
   double get totalPrice => _items.fold(
     0,
     (sum, item) => sum + ((item.productData['price'] ?? 0) * item.quantity),
   );
 
+  // Tính tổng số lượng
   int get totalQuantity {
     int total = 0;
     for (var item in _items) {
@@ -27,17 +29,18 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // --- 1. LOAD CART ---
   Future<void> loadCart(String userId) async {
     try {
       final res = await http.get(Uri.parse("$baseUrl/carts/$userId"));
-
+      
       if (res.statusCode == 200) {
         List data = jsonDecode(res.body);
-
+        debugPrint(data.toString());
         _items = data.map((e) => CartItem.fromJson(e)).toList();
         notifyListeners();
       } else {
-        debugPrint("❌ loadCart failed: ${res.reasonPhrase}");
+        debugPrint("❌ loadCart failed: ${res.statusCode}");
       }
     } catch (e) {
       debugPrint("❌ Error loadCart: $e");
@@ -47,28 +50,21 @@ class CartProvider extends ChangeNotifier {
   Future<void> clearCart(String userId) async {
     try {
       final response = await http.delete(
-        Uri.parse("$baseUrl/$userId"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
+        Uri.parse("$baseUrl/carts/clear/$userId"),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 204) {
-        _items = [];
-        notifyListeners();
-
-        print("Giỏ hàng của người dùng $userId đã được xóa thành công.");
+      if (response.statusCode == 200) {
+        reset();
+        debugPrint("✅ Cart cleared successfully");
       } else {
-        print("Lỗi khi xóa giỏ hàng. Mã trạng thái: ${response.statusCode}");
-        print("Chi tiết lỗi: ${response.body}");
-        throw Exception("Không thể xóa giỏ hàng trên server.");
+        debugPrint("❌ Failed to clear cart: ${response.body}");
       }
     } catch (e) {
-      print("Lỗi kết nối khi xóa giỏ hàng: $e");
-      throw Exception("Lỗi mạng khi xóa giỏ hàng.");
+      debugPrint("❌ Error clearing cart: $e");
     }
   }
 
+  // --- 3. ADD / UPDATE ITEM ---
   Future<void> addCart(
     String userId,
     String productId,
@@ -79,67 +75,74 @@ class CartProvider extends ChangeNotifier {
       final index = _items.indexWhere((item) => item.productId == productId);
 
       if (index != -1) {
-        final newQuantity = _items[index].quantity + change;
+        // --- TRƯỜNG HỢP 1: SẢN PHẨM ĐÃ CÓ -> UPDATE SỐ LƯỢNG ---
+        final currentQty = _items[index].quantity;
+        final newQuantity = currentQty + change;
 
         if (newQuantity <= 0) {
-          await removeItem(_items[index].cartId, userId);
+          // Nếu giảm về 0 -> Gọi API Xóa
+          await removeItem(productId, userId); 
         } else {
+          // Gọi API Update
           final res = await http.put(
-            Uri.parse("$baseUrl/carts/update/${_items[index].cartId}"),
+            Uri.parse("$baseUrl/carts/update"),
             headers: {"Content-Type": "application/json"},
-            body: jsonEncode({"quantity": newQuantity}),
+            body: jsonEncode({
+              "userId": userId,
+              "productId": productId,
+              "quantity": newQuantity
+            }),
           );
 
           if (res.statusCode == 200) {
-            await loadCart(userId);
+            // Update UI ngay lập tức (Optimistic Update) hoặc load lại
+            _items[index].quantity = newQuantity; 
+            notifyListeners();
+            // await loadCart(userId); // Nếu muốn chắc ăn thì load lại
           }
         }
       } else {
-        final body = jsonEncode({
-          "userId": userId,
-          "productId": productId,
-          "productData": productData,
-          "quantity": change > 0 ? change : 1,
-        });
+        // --- TRƯỜNG HỢP 2: SẢN PHẨM MỚI -> ADD ---
+        if (change <= 0) return;
 
         final res = await http.post(
           Uri.parse("$baseUrl/carts/add"),
           headers: {"Content-Type": "application/json"},
-          body: body,
+          body: jsonEncode({
+            "userId": userId,
+            "productId": productId,
+            "quantity": change
+          }),
         );
 
-        if (res.statusCode == 200) {
+        if (res.statusCode == 200 || res.statusCode == 201) {
           await loadCart(userId);
         }
       }
     } catch (e) {
-      debugPrint("Error addCart: $e");
+      debugPrint("❌ Error addCart: $e");
     }
   }
 
-  Future<void> updateQuantity(String id, int quantity, String userId) async {
+  // --- 4. REMOVE ITEM (XÓA 1 MÓN) ---
+  Future<void> removeItem(String productId, String userId) async {
     try {
-      final res = await http.put(
-        Uri.parse("$baseUrl/carts/update/$id"),
+      // API Backend mới dùng productId để xóa
+      final res = await http.delete(
+        Uri.parse("$baseUrl/carts/remove"), 
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"quantity": quantity}),
+        body: jsonEncode({
+          "userId": userId,
+          "productId": productId
+        }),
       );
 
       if (res.statusCode == 200) {
-        await loadCart(userId);
+        _items.removeWhere((item) => item.productId == productId);
+        notifyListeners();
       }
     } catch (e) {
-      debugPrint("Error updateQuantity: $e");
-    }
-  }
-
-  Future<void> removeItem(String id, String userId) async {
-    try {
-      await http.delete(Uri.parse("$baseUrl/carts/delete/$id"));
-      _items.removeWhere((item) => item.cartId == id);
-      notifyListeners();
-    } catch (e) {
-      debugPrint("Error remove item: $e");
+      debugPrint("❌ Error remove item: $e");
     }
   }
 }
