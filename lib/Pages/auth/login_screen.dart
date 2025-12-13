@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Pages/auth/Screen/onboarding.dart';
-import 'package:fast_food_app/Pages/auth/sinup_screen.dart';
+import 'package:fast_food_app/Pages/auth/signup_screen.dart';
 import 'package:fast_food_app/Widget/my_button.dart';
 import 'package:fast_food_app/Service/auth_service.dart';
 import 'package:fast_food_app/Widget/snack_back.dart';
@@ -16,29 +16,29 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-  bool isLoadin = false;
+  bool isLoading = false;
   bool isPasswordHidden = true;
 
-  void _logIN() async {
+  void _login() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     if (!mounted) return;
     setState(() {
-      isLoadin = true;
+      isLoading = true;
     });
     final result = await _authService.login(email, password);
     if (!mounted) return;
     if (result == null) {
       setState(() {
-        isLoadin = false;
+        isLoading = false;
       });
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => OnbordingScreenState()),
+        MaterialPageRoute(builder: (_) => OnboardingScreenState()),
       );
     } else {
       setState(() {
-        isLoadin = false;
+        isLoading = false;
       });
       showSnackBar(context, "Signup Failed: $result", Colors.red);
     }
@@ -89,11 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: isPasswordHidden,
               ),
               SizedBox(height: 20),
-              isLoadin
+              isLoading
                   ? Center(child: CircularProgressIndicator())
                   : SizedBox(
                       width: double.maxFinite,
-                      child: MyButton(onTap: _logIN, buttonText: "Login"),
+                      child: MyButton(onTap: _login, buttonText: "Login"),
                     ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -106,11 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => SinupScreen()),
+                        MaterialPageRoute(builder: (_) => SignupScreen()),
                       );
                     },
                     child: Text(
-                      "Sigup here",
+                      "Signup here",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

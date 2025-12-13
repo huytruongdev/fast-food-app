@@ -323,11 +323,15 @@ class _CartScreenState extends State<CartScreen> {
     );
 
     try {
+      final body = jsonEncode(order.toJson());
+
+      debugPrint(body);
       final response = await http.post(
         Uri.parse("http://10.0.2.2:3000/orders"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode(order.toJson()),
+        body: body,
       );
+      debugPrint(response.toString());
 
     } catch (e) {
       _showSnackBar(

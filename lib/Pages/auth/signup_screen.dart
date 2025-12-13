@@ -4,18 +4,18 @@ import 'package:fast_food_app/Widget/my_button.dart';
 import 'package:fast_food_app/Widget/snack_back.dart';
 import 'package:fast_food_app/Pages/auth/login_screen.dart';
 
-class SinupScreen extends StatefulWidget {
-  const SinupScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<SinupScreen> createState() => _SinupScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SinupScreenState extends State<SinupScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-  bool isLoadin = false;
+  bool isLoading = false;
   bool isPasswordHidden = true;
 
   void _signUp() async {
@@ -27,13 +27,13 @@ class _SinupScreenState extends State<SinupScreen> {
       return;
     }
     setState(() {
-      isLoadin = true;
+      isLoading = true;
     });
     final result = await _authService.signup(email, password);
     if (!mounted) return;
     if (result == null) {
       setState(() {
-        isLoadin = false;
+        isLoading = false;
       });
       showSnackBar(context, "Signup Successful! Now Turn to Login", Colors.green);
       Navigator.pushReplacement(
@@ -42,7 +42,7 @@ class _SinupScreenState extends State<SinupScreen> {
       );
     } else {
       setState(() {
-        isLoadin = false;
+        isLoading = false;
       });
       showSnackBar(context, "Signup Failed: $result", Colors.red);
     }
@@ -94,7 +94,7 @@ class _SinupScreenState extends State<SinupScreen> {
                 obscureText: isPasswordHidden,
               ),
               SizedBox(height: 20),
-              isLoadin
+              isLoading
                   ? Center(child: CircularProgressIndicator())
                   : SizedBox(
                       width: double.maxFinite,
@@ -104,7 +104,7 @@ class _SinupScreenState extends State<SinupScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Already have an acount !",
+                    "Already have an account !",
                     style: TextStyle(fontSize: 18),
                   ),
                   GestureDetector(

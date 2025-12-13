@@ -15,7 +15,7 @@ class AppMainScreen extends StatefulWidget {
 }
 
 class _AppMainScreenState extends State<AppMainScreen> {
-  int currentInex = 0;
+  int currentIndex = 0;
   final List<Widget> _pages = [
     FoodAppHomeScreen(),
     FavoriteScreen(),
@@ -25,7 +25,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[currentInex],
+      body: _pages[currentIndex],
       bottomNavigationBar: Container(
         height: 80,
         decoration: BoxDecoration(color: Colors.white),
@@ -76,11 +76,11 @@ class _AppMainScreenState extends State<AppMainScreen> {
     );
   }
 
-  Widget _buildNavItems(IconData icon, String lable, int index) {
+  Widget _buildNavItems(IconData icon, String label, int index) {
     return InkWell(
       onTap: () {
         setState(() {
-          currentInex = index;
+          currentIndex = index;
         });
       },
       child: Column(
@@ -89,12 +89,12 @@ class _AppMainScreenState extends State<AppMainScreen> {
           Icon(
             icon,
             size: 30,
-            color: currentInex == index ? Colors.red : Colors.grey,
+            color: currentIndex == index ? Colors.red : Colors.grey,
           ),
           SizedBox(height: 3),
           CircleAvatar(
             radius: 3,
-            backgroundColor: currentInex == index? red : Colors.transparent,
+            backgroundColor: currentIndex == index ? red : Colors.transparent,
           )
         ],
       ),

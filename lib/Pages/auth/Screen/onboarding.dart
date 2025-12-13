@@ -3,14 +3,14 @@ import 'package:fast_food_app/Core/Utils/consts.dart';
 import 'package:fast_food_app/Core/models/on_bording_model.dart';
 import 'package:fast_food_app/Pages/auth/Screen/app_main_screen.dart';
 
-class OnbordingScreenState extends StatefulWidget {
-  const OnbordingScreenState({super.key});
+class OnboardingScreenState extends StatefulWidget {
+  const OnboardingScreenState({super.key});
 
   @override
-  State<OnbordingScreenState> createState() => _OnbordingScreenStateState();
+  State<OnboardingScreenState> createState() => _OnboardingScreenStateState();
 }
 
-class _OnbordingScreenStateState extends State<OnbordingScreenState> {
+class _OnboardingScreenStateState extends State<OnboardingScreenState> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   @override
