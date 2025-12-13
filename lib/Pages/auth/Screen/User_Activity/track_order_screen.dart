@@ -7,13 +7,14 @@ import 'package:provider/provider.dart';
 class TrackOrderScreen extends StatelessWidget {
   final OrderModel order;
   const TrackOrderScreen({super.key, required this.order});
-
+ 
   @override
   Widget build(BuildContext context) {
+    String orderId = order.id?.substring(0, 6).toUpperCase() ?? '';
     return ChangeNotifierProvider(
       create: (_) => TrackingProvider()..init(order),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Theo dõi đơn hàng")),
+        appBar: AppBar(title: Text("Theo dõi đơn hàng #$orderId")),
         body: Consumer<TrackingProvider>(
           builder: (context, provider, child) {
             return Stack(
