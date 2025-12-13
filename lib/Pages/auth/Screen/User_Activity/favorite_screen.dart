@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
+import 'package:fast_food_app/Core/Utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -122,7 +123,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       item.name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text("${item.price.toInt()} VNĐ"),
+                    subtitle: Text(formatVND(item.price.toInt())),
                     trailing: IconButton(
                       icon: Icon(
                         provider.isExist(item.productId)

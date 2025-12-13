@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:fast_food_app/Core/Utils/format.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -112,7 +113,7 @@ class _CartScreenState extends State<CartScreen> {
                             ),
 
                             subtitle: Text(
-                              "${item.productData['price']} đ",
+                              formatVND(item.productData['price']),
                               style: const TextStyle(fontSize: 14),
                             ),
 
@@ -212,7 +213,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Total: ${cart.totalPrice.toStringAsFixed(0)} đ",
+                        "Total: ${formatVND(cart.totalPrice.toInt())}",
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,

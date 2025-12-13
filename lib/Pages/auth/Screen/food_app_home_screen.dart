@@ -101,7 +101,7 @@ class _FoodAppHomeScreenState extends State<FoodAppHomeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     if (products.isEmpty) {
-      return const Center(child: Text("Không có sản phẩm nào theo Thể loại"));
+      return const Center(child: Text("Không có sản phẩm nào"));
     }
     return SizedBox(
       height: 270, 

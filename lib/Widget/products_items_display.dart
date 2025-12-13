@@ -1,4 +1,5 @@
 import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
+import 'package:fast_food_app/Core/Utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fast_food_app/Core/Utils/consts.dart';
@@ -141,15 +142,11 @@ class ProductsItemsDisplay extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         children: [
                           TextSpan(
-                            text: "${foodModel.price.toInt()}",
+                            text: formatVND(foodModel.price.toInt()),
                             style: const TextStyle(
                               fontSize: 25,
                               color: Colors.black,
                             ),
-                          ),
-                          TextSpan(
-                            text: "đ",
-                            style: TextStyle(fontSize: 14, color: red),
                           ),
                         ],
                       ),
