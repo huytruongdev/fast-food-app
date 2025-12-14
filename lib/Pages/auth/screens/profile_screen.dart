@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             
-            const Divider(thickness: 5, color: Colors.grey),
+            const Divider(thickness: 2, color: Colors.grey),
             
             const Padding(
               padding: EdgeInsets.all(15.0),

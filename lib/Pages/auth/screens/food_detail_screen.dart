@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   final FoodModel products;
@@ -194,7 +195,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         elevation: 0,
         label: MaterialButton(
           onPressed: () async {
-            String userId = "u001";
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? userId = prefs.getString('userId');
+
+            if (userId == null) {
+              if (!context.mounted) return;
+              showAppSnackbar(
+                context: context,
+                type: SnackbarType.error,
+                description: "Vui lòng đăng nhập để thêm vào giỏ hàng!",
+              );
+              return; 
+            }
+
+            if (!context.mounted) return;
+
             await Provider.of<CartProvider>(context, listen: false).addCart(
               userId,
               widget.products.productId,
