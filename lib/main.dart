@@ -1,4 +1,5 @@
 import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/Core/providers/order_provider.dart';
 import 'package:fast_food_app/Core/providers/products_pagination_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ void main() async {
           ChangeNotifierProvider(create: (_) => ProductPaginationProvider()),
           ChangeNotifierProvider(create: (_) => FavoriteProvider()),
           ChangeNotifierProvider(create: (_) => CartProvider()),
+          ChangeNotifierProvider(create: (_) => OrderProvider()),
         ],
         child: const MyApp(),
       ),

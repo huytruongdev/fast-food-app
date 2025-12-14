@@ -157,8 +157,8 @@ class _CartScreenState extends State<CartScreen> {
       price: cart.totalPrice.toInt(),
       pickupLocation: pickup,
       deliveryLocation: delivery,
-      pickupAddress: "Cửa hàng",
-      deliveryAddress: "Địa chỉ khách hàng",
+      pickupAddress: "Cửa hàng (CN Cầu vượt Cộng Hoà)",
+      deliveryAddress: "Trường Cao Đẳng Lý Tự Trọng",
     );
   }
 

@@ -9,6 +9,8 @@ class OrderList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
       separatorBuilder: (ctx, i) => const SizedBox(height: 12),
       itemBuilder: (context, index) {

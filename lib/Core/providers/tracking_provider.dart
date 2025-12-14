@@ -5,14 +5,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TrackingProvider extends ChangeNotifier {
   final SocketService _socketService = SocketService();
-
+  
   Set<Polyline> polylines = {};
 
   late LatLng shopLocation;
   late LatLng userLocation;
   LatLng driverLocation = const LatLng(0, 0);
   double driverHeading = 0.0;
+
+  String? currentStatus;
   
+  String pickupName = "Cửa hàng";
+  String deliveryName = "Địa chỉ nhận hàng";
+
   Set<Marker> markers = {};
   BitmapDescriptor? driverIcon;
   GoogleMapController? mapController;
@@ -22,41 +27,17 @@ class TrackingProvider extends ChangeNotifier {
   void init(OrderModel order) {
     shopLocation = order.pickupLocation;
     userLocation = order.deliveryLocation;
+    
+    pickupName = order.pickupAddress;
+    deliveryName = order.deliveryAddress;
 
     driverLocation = shopLocation;
     _traveledRoute = [shopLocation];
+    currentStatus = order.status;
 
     _loadDriverMarker();
     _updateMarkers();
     _setupSocket(order.id ?? '');
-
-    // _getRoutePolyline();
-  }
-
-  Future<void> _getRoutePolyline() async {
-    List<LatLng> routePoints = [
-      shopLocation, 
-      LatLng(10.800469, 106.660839),
-      LatLng(10.800216, 106.660818),
-      LatLng(10.799521, 106.660013),
-      LatLng(10.798783, 106.659294),
-      LatLng(10.797476, 106.657889),
-      LatLng(10.796220, 106.656432),
-      userLocation,
-    ];
-
-    Polyline routeLine = Polyline(
-      polylineId: const PolylineId("static_route"),
-      points: routePoints,
-      color: Colors.blue,
-      width: 5,
-      jointType: JointType.round,
-      startCap: Cap.roundCap,
-      endCap: Cap.roundCap,
-    );
-
-    polylines = {routeLine};
-    notifyListeners();
   }
 
   Future<void> _loadDriverMarker() async {
@@ -94,6 +75,13 @@ class TrackingProvider extends ChangeNotifier {
       
       notifyListeners();
     });
+
+    _socketService.getSocket()?.on('order_status_update', (data) {
+        if (data['orderId'] == orderId) {
+            currentStatus = data['status'];
+            notifyListeners();
+        }
+    });
   }
 
   void _updateRealtimePolyline() {
@@ -101,11 +89,10 @@ class TrackingProvider extends ChangeNotifier {
       polylineId: const PolylineId("realtime_trail"),
       points: _traveledRoute,
       color: Colors.blue,
-      width: 7,
+      width: 5,
       jointType: JointType.round,
       startCap: Cap.roundCap,
       endCap: Cap.roundCap,
-      patterns: [PatternItem.dash(10), PatternItem.gap(0)],
     );
 
     polylines = {trailLine};
@@ -117,12 +104,16 @@ class TrackingProvider extends ChangeNotifier {
         markerId: const MarkerId("shop"),
         position: shopLocation,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        infoWindow: InfoWindow(title: pickupName, snippet: "Điểm lấy hàng"),
       ),
+      
       Marker(
         markerId: const MarkerId("user"),
         position: userLocation,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        infoWindow: InfoWindow(title: deliveryName, snippet: "Điểm giao hàng"),
       ),
+      
       Marker(
         markerId: const MarkerId("driver"),
         position: driverLocation,
@@ -130,6 +121,7 @@ class TrackingProvider extends ChangeNotifier {
         icon: driverIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
         anchor: const Offset(0.5, 0.5),
         zIndexInt: 2,
+        infoWindow: InfoWindow(title: "Tài xế", snippet: currentStatus == 'shipping' ? "Đang di chuyển" : null),
       ),
     };
     notifyListeners();
@@ -154,6 +146,7 @@ class TrackingProvider extends ChangeNotifier {
   @override
   void dispose() {
     _socketService.off('delivery_location_update');
+    _socketService.off('order_status_update');
     super.dispose();
   }
 }
