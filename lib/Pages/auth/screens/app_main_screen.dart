@@ -1,12 +1,12 @@
-import 'package:fast_food_app/Core/Provider/cart_provider.dart';
-import 'package:fast_food_app/Pages/auth/Screen/User_Activity/cart_screen.dart';
-import 'package:fast_food_app/Pages/auth/Screen/User_Activity/favorite_screen.dart';
+import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/pages/auth/screens/user_activities/cart_screen.dart';
+import 'package:fast_food_app/pages/auth/screens/food_app_home_screen.dart';
+import 'package:fast_food_app/pages/auth/screens/profile_screen.dart';
+import 'package:fast_food_app/pages/auth/screens/user_activities/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fast_food_app/Pages/auth/Screen/food_app_home_screen.dart';
-import 'package:fast_food_app/Pages/auth/Screen/profile_screen.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:fast_food_app/Core/utils/consts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

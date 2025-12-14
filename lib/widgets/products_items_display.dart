@@ -1,10 +1,10 @@
-import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
-import 'package:fast_food_app/Core/Utils/format.dart';
+import 'package:fast_food_app/Core/providers/favorite_provider.dart';
+import 'package:fast_food_app/Core/utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:fast_food_app/Core/utils/consts.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
-import 'package:fast_food_app/Pages/auth/Screen/food_detail_screen.dart';
+import 'package:fast_food_app/pages/auth/screens/food_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class ProductsItemsDisplay extends StatelessWidget {

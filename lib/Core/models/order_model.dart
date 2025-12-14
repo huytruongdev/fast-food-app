@@ -1,4 +1,4 @@
-import 'package:fast_food_app/Core/models/order_item.dart';
+import 'package:fast_food_app/Core/models/order_item_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OrderModel {
@@ -11,8 +11,11 @@ class OrderModel {
   final LatLng deliveryLocation;
   final String pickupAddress;
   final String deliveryAddress;
-  final String? status;
   final String? createdAt;
+  final String? shipperId;
+  final String? shipperName;
+  final String? shipperPhone;
+  String? status;
 
   OrderModel({
     this.id,
@@ -24,8 +27,11 @@ class OrderModel {
     required this.deliveryLocation,
     required this.pickupAddress,
     required this.deliveryAddress,
-    this.status,
     this.createdAt,
+    this.shipperId,
+    this.shipperName,
+    this.shipperPhone,
+    this.status,
   });
 
   Map<String, dynamic> toJson() {
@@ -67,8 +73,15 @@ class OrderModel {
       ),
       pickupAddress: json["pickupAddress"],
       deliveryAddress: json["deliveryAddress"],
+      createdAt: json['createdAt'],
+      shipperId: json["shipperId"],
+      shipperName: json['shipperInfo'] != null 
+          ? json['shipperInfo']['username'] 
+          : null,
+      shipperPhone: json['shipperInfo'] != null 
+          ? json['shipperInfo']['phone_number'] 
+          : null,
       status: json["status"],
-      createdAt: json['createdAt']
     );
   }
 }

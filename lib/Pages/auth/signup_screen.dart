@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fast_food_app/Service/auth_service.dart';
-import 'package:fast_food_app/Widget/my_button.dart';
-import 'package:fast_food_app/Widget/snack_back.dart';
-import 'package:fast_food_app/Pages/auth/login_screen.dart';
+import 'package:fast_food_app/service/auth_service.dart';
+import 'package:fast_food_app/widgets/my_button.dart';
+import 'package:fast_food_app/widgets/snack_back.dart';
+import 'package:fast_food_app/pages/auth/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

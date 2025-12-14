@@ -1,11 +1,11 @@
+import 'package:fast_food_app/pages/auth/screens/view_all_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fast_food_app/Core/Utils/consts.dart';
-import 'package:fast_food_app/Pages/auth/Screen/view_all_screen.dart';
-import 'package:fast_food_app/Service/category_service.dart';
+import 'package:fast_food_app/Core/utils/consts.dart';
+import 'package:fast_food_app/service/category_service.dart';
 import 'package:fast_food_app/Core/models/categories_model.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
-import 'package:fast_food_app/Service/product_service.dart';
-import 'package:fast_food_app/Widget/products_items_display.dart';
+import 'package:fast_food_app/service/product_service.dart';
+import 'package:fast_food_app/widgets/products_items_display.dart';
 
 class FoodAppHomeScreen extends StatefulWidget {
   const FoodAppHomeScreen({super.key});

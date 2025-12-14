@@ -1,6 +1,7 @@
-import 'package:fast_food_app/Core/Provider/cart_provider.dart';
-import 'package:fast_food_app/Core/Utils/consts.dart';
-import 'package:fast_food_app/Widget/snack_back.dart';
+import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/Core/utils/consts.dart';
+import 'package:fast_food_app/Core/utils/format.dart';
+import 'package:fast_food_app/widgets/snack_back.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fast_food_app/Core/models/product_model.dart';
@@ -133,15 +134,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
-                              text: "${widget.products.price.toInt()}",
+                              text: formatVND(widget.products.price.toInt()),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 30,
                               ),
-                            ),
-                            TextSpan(
-                              text: " đ",
-                              style: TextStyle(color: red, fontSize: 16),
                             ),
                           ],
                         ),

@@ -1,4 +1,4 @@
-import 'package:fast_food_app/Core/Provider/tracking_provider.dart';
+import 'package:fast_food_app/Core/providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';

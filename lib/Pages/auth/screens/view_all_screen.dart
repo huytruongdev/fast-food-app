@@ -1,5 +1,5 @@
-import 'package:fast_food_app/Core/Provider/products_pagination_provider.dart';
-import 'package:fast_food_app/Widget/products_items_display.dart';
+import 'package:fast_food_app/Core/providers/products_pagination_provider.dart';
+import 'package:fast_food_app/widgets/products_items_display.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

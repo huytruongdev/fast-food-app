@@ -7,6 +7,7 @@ class SocketService {
   SocketService._internal();
 
   IO.Socket? _socket;
+  IO.Socket? getSocket() => _socket;
 
   void initSocket() {
     if (_socket != null && _socket!.connected) return;

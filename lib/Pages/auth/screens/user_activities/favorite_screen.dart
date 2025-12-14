@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
-import 'package:fast_food_app/Core/Utils/format.dart';
+import 'package:fast_food_app/Core/providers/favorite_provider.dart';
+import 'package:fast_food_app/Core/utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';

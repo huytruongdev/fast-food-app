@@ -1,5 +1,5 @@
-import 'package:fast_food_app/Core/Provider/cart_provider.dart';
-import 'package:fast_food_app/Core/Provider/favorite_provider.dart';
+import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/Core/providers/favorite_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

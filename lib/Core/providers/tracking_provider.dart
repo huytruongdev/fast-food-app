@@ -1,11 +1,10 @@
 import 'package:fast_food_app/Core/models/order_model.dart';
-import 'package:fast_food_app/Service/socket_service.dart';
+import 'package:fast_food_app/service/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TrackingProvider extends ChangeNotifier {
   final SocketService _socketService = SocketService();
-  final String googleApiKey = "AIzaSyB2u3cpI35ia33ISTqyIe2VARoNu1_0ltY";
 
   Set<Polyline> polylines = {};
 
@@ -18,16 +17,20 @@ class TrackingProvider extends ChangeNotifier {
   BitmapDescriptor? driverIcon;
   GoogleMapController? mapController;
 
+  List<LatLng> _traveledRoute = [];
+
   void init(OrderModel order) {
     shopLocation = order.pickupLocation;
     userLocation = order.deliveryLocation;
+
     driverLocation = shopLocation;
+    _traveledRoute = [shopLocation];
 
     _loadDriverMarker();
     _updateMarkers();
     _setupSocket(order.id ?? '');
 
-    _getRoutePolyline();
+    // _getRoutePolyline();
   }
 
   Future<void> _getRoutePolyline() async {
@@ -62,7 +65,7 @@ class TrackingProvider extends ChangeNotifier {
         const ImageConfiguration(),
         'assets/images/shipper_icon.png'
       );
-      _updateMarkers(); // Vẽ lại khi có icon
+      _updateMarkers();
     } catch (e) {
       print("Lỗi icon: $e");
     }
@@ -76,19 +79,36 @@ class TrackingProvider extends ChangeNotifier {
     });
 
     _socketService.onDriverLocationUpdate((data) {
-      print("Provider received: $data");
-      
       double lat = double.parse(data['lat'].toString());
       double lng = double.parse(data['lng'].toString());
       driverHeading = double.parse((data['heading'] ?? 0.0).toString());
       
-      driverLocation = LatLng(lat, lng);
+      LatLng newPosition = LatLng(lat, lng);
+      driverLocation = newPosition;
+
+      _traveledRoute.add(newPosition);
       
+      _updateRealtimePolyline();
       _updateMarkers();
       _animateCamera();
       
       notifyListeners();
     });
+  }
+
+  void _updateRealtimePolyline() {
+    Polyline trailLine = Polyline(
+      polylineId: const PolylineId("realtime_trail"),
+      points: _traveledRoute,
+      color: Colors.blue,
+      width: 7,
+      jointType: JointType.round,
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
+      patterns: [PatternItem.dash(10), PatternItem.gap(0)],
+    );
+
+    polylines = {trailLine};
   }
 
   void _updateMarkers() {
@@ -106,16 +126,15 @@ class TrackingProvider extends ChangeNotifier {
       Marker(
         markerId: const MarkerId("driver"),
         position: driverLocation,
-        rotation: driverHeading,
+        rotation: 0.0,
         icon: driverIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
         anchor: const Offset(0.5, 0.5),
-        zIndex: 2,
+        zIndexInt: 2,
       ),
     };
     notifyListeners();
   }
   
-  // Hàm set controller từ UI truyền vào
   void setMapController(GoogleMapController controller) {
     mapController = controller;
   }
@@ -123,12 +142,11 @@ class TrackingProvider extends ChangeNotifier {
   void _animateCamera() {
     mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: driverLocation, zoom: 16, bearing: driverHeading),
+        CameraPosition(target: driverLocation, zoom: 16, bearing: 0.0),
       ),
     );
   }
-  
-  // Hàm này để nút bấm ở UI gọi
+
   void findDriver() {
     _animateCamera();
   }

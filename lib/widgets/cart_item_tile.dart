@@ -1,5 +1,5 @@
-import 'package:fast_food_app/Core/Provider/cart_provider.dart';
-import 'package:fast_food_app/Core/Utils/format.dart';
+import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/Core/utils/format.dart';
 import 'package:flutter/material.dart';
 
 class CartItemTile extends StatelessWidget {

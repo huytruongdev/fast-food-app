@@ -1,7 +1,7 @@
+import 'package:fast_food_app/pages/auth/screens/app_main_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fast_food_app/Core/Utils/consts.dart';
+import 'package:fast_food_app/Core/utils/consts.dart';
 import 'package:fast_food_app/Core/models/on_bording_model.dart';
-import 'package:fast_food_app/Pages/auth/Screen/app_main_screen.dart';
 
 class OnboardingScreenState extends StatefulWidget {
   const OnboardingScreenState({super.key});

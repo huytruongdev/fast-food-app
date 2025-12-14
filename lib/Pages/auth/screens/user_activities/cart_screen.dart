@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:fast_food_app/Core/models/order_item.dart';
+import 'package:fast_food_app/Core/models/order_item_model.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
-import 'package:fast_food_app/Core/Provider/cart_provider.dart';
-import 'package:fast_food_app/Pages/auth/Screen/User_Activity/order_detail_screen.dart';
-import 'package:fast_food_app/Widget/cart_bar.dart';
-import 'package:fast_food_app/Widget/cart_item_tile.dart';
+import 'package:fast_food_app/Core/providers/cart_provider.dart';
+import 'package:fast_food_app/pages/auth/screens/user_activities/order_detail_screen.dart';
+import 'package:fast_food_app/widgets/cart_bar.dart';
+import 'package:fast_food_app/widgets/cart_item_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -110,7 +110,7 @@ class _CartScreenState extends State<CartScreen> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showMsg("Đặt hàng thành công!");
+        // _showMsg("Đặt hàng thành công!");
         final responseData = jsonDecode(response.body);
 
         final createdOrder = OrderModel.fromJson(responseData);
