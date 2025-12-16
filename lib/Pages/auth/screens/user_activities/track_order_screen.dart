@@ -1,4 +1,5 @@
 import 'package:fast_food_app/Core/providers/tracking_provider.dart';
+import 'package:fast_food_app/Core/utils/order_status_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
@@ -7,41 +8,6 @@ import 'package:provider/provider.dart';
 class TrackOrderScreen extends StatelessWidget {
   final OrderModel order;
   const TrackOrderScreen({super.key, required this.order});
-
-  // 1. Helper: Lấy màu dựa trên trạng thái
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-      case 'accepted':
-        return Colors.orange;
-      case 'shipping':
-        return Colors.blue;
-      case 'arrived':
-        return Colors.red; // Màu nổi bật để khách chú ý
-      case 'delivered':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  // 2. Helper: Lấy text hiển thị tiếng Việt
-  String _getStatusText(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return "Đang tìm tài xế...";
-      case 'accepted':
-        return "Tài xế đang đến lấy hàng";
-      case 'shipping':
-        return "Tài xế đang giao đến bạn";
-      case 'arrived':
-        return "Tài xế sắp đến nơi. Hãy chú ý điện thoại!";
-      case 'delivered':
-        return "Giao hàng thành công";
-      default:
-        return "Trạng thái: $status";
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +36,6 @@ class TrackOrderScreen extends StatelessWidget {
                   },
                 ),
 
-                // --- STATUS CHIP ---
                 Positioned(
                   top: 20,
                   left: 20,
@@ -96,11 +61,11 @@ class TrackOrderScreen extends StatelessWidget {
                             width: 12,
                             height: 12,
                             decoration: BoxDecoration(
-                              color: _getStatusColor(currentDisplayStatus),
+                              color: OrderStatusHelper.getColor(currentDisplayStatus),
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: _getStatusColor(currentDisplayStatus).withOpacity(0.4),
+                                  color: OrderStatusHelper.getColor(currentDisplayStatus).withOpacity(0.4),
                                   blurRadius: 5,
                                   spreadRadius: 2,
                                 )
@@ -109,7 +74,7 @@ class TrackOrderScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            _getStatusText(currentDisplayStatus),
+                            OrderStatusHelper.getText(currentDisplayStatus),
                             style: TextStyle(
                               color: Colors.black87,
                               fontWeight: FontWeight.bold,

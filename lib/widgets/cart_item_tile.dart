@@ -3,7 +3,7 @@ import 'package:fast_food_app/Core/utils/format.dart';
 import 'package:flutter/material.dart';
 
 class CartItemTile extends StatelessWidget {
-  final dynamic item; // Nên dùng type cụ thể nếu có (CartItemModel)
+  final dynamic item;
   final String userId;
   final CartProvider cartProvider;
 
@@ -78,7 +78,7 @@ class CartItemTile extends StatelessWidget {
           if (item.quantity > 1) {
             cartProvider.addCart(userId, item.productId, item.productData, -1);
           } else {
-            cartProvider.removeItem(item.cartId, userId);
+            cartProvider.removeItem(item.productId, userId);
           }
         }),
         Padding(

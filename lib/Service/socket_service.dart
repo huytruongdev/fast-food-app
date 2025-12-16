@@ -29,7 +29,6 @@ class SocketService {
   void joinOrderRoom(String orderId) {
     if (_socket != null && _socket!.connected) {
       _socket?.emit('join_order', orderId);
-      debugPrint('Joined room: $orderId');
     }
   }
 

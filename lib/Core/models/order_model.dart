@@ -16,6 +16,8 @@ class OrderModel {
   final String? shipperName;
   final String? shipperPhone;
   String? status;
+  final int discountAmount;
+  final int shippingFee;
 
   OrderModel({
     this.id,
@@ -32,6 +34,8 @@ class OrderModel {
     this.shipperName,
     this.shipperPhone,
     this.status,
+    this.discountAmount = 0,
+    this.shippingFee = 0,
   });
 
   Map<String, dynamic> toJson() {
@@ -51,6 +55,8 @@ class OrderModel {
       },
       "pickupAddress": pickupAddress,
       "deliveryAddress": deliveryAddress,
+      "discountAmount": discountAmount,
+      "shippingFee": shippingFee
     };
   }
 
@@ -82,6 +88,8 @@ class OrderModel {
           ? json['shipperInfo']['phone_number'] 
           : null,
       status: json["status"],
+      discountAmount: json["discountAmount"] ?? 0,
+      shippingFee: json["shippingFee"] ?? 0
     );
   }
 }

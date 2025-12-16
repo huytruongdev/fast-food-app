@@ -1,10 +1,10 @@
 import 'package:fast_food_app/Core/models/order_model.dart';
+import 'package:fast_food_app/Core/utils/order_status_helper.dart';
 import 'package:flutter/material.dart';
 
 class OrderHeaderSection extends StatelessWidget {
   final OrderModel order;
   const OrderHeaderSection({super.key, required this.order});
-
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,11 @@ class OrderHeaderSection extends StatelessWidget {
             style: const TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 15),
-          
+
+          _buildStatusBadge(context, order.status),
+
+          const SizedBox(height: 15),
+
           if (order.shipperId != null)
             _buildShipperInfo()
           else
@@ -52,10 +56,16 @@ class OrderHeaderSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Tài xế giao hàng", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                const Text(
+                  "Tài xế giao hàng",
+                  style: TextStyle(fontSize: 10, color: Colors.grey),
+                ),
                 Text(
                   order.shipperName ?? "Tài xế công nghệ",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 if (order.shipperPhone != null)
                   Text(
@@ -68,9 +78,53 @@ class OrderHeaderSection extends StatelessWidget {
           if (order.shipperPhone != null)
             IconButton(
               onPressed: () => {},
-              style: IconButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
               icon: const Icon(Icons.phone),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(BuildContext context, String? status) {
+    if (status == 'pending') {
+      return const SizedBox.shrink();
+    }
+
+    Color color = OrderStatusHelper.getColor(status);
+    String text = OrderStatusHelper.getText(status);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.info, color: color, size: 18),
+        ),
+        const SizedBox(width: 12),
+          Text(
+            "Trạng thái: $text",
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
         ],
       ),
     );

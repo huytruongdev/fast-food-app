@@ -10,12 +10,15 @@ class OrderSummarySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double itemTotal = order.items.fold(0, (sum, item) => sum + (item.price * item.quantity));
+
     bool isCompleted = (order.status == 'delivered' || order.status == 'cancelled');
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -29,11 +32,36 @@ class OrderSummarySection extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // --- CÁC DÒNG CHI TIẾT ---
+            
+            // 1. Tổng tiền hàng
+            _buildRow("Tổng tiền món", formatVND(itemTotal.toInt())),
+            const SizedBox(height: 8),
+
+            // 2. Phí giao hàng
+            _buildRow("Phí giao hàng", formatVND(order.shippingFee)),
+            
+            // 3. Giảm giá (Chỉ hiện nếu có)
+            if (order.discountAmount > 0) ...[
+              const SizedBox(height: 8),
+              _buildRow(
+                "Giảm giá", 
+                "-${formatVND(order.discountAmount)}", 
+                valueColor: Colors.green
+              ),
+            ],
+
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              child: Divider(),
+            ),
+
+            // --- TỔNG THANH TOÁN ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Tổng cộng:",
+                  "Tổng thanh toán:",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -42,8 +70,10 @@ class OrderSummarySection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
             
+            const SizedBox(height: 20),
+            
+            // --- NÚT HÀNH ĐỘNG ---
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -64,10 +94,8 @@ class OrderSummarySection extends StatelessWidget {
                         );
                       },
                 child: Text(
-                  order.status == 'cancelled' 
-                      ? "Đơn hàng đã huỷ"
-                      : (isCompleted ? "Giao hàng thành công" : "Theo dõi đơn hàng (Track Order)"),
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  _getButtonText(order.status),
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -75,5 +103,28 @@ class OrderSummarySection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildRow(String title, String value, {Color? valueColor}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+        Text(
+          value, 
+          style: TextStyle(
+            fontWeight: FontWeight.w500, 
+            color: valueColor ?? Colors.black,
+            fontSize: 14
+          )
+        ),
+      ],
+    );
+  }
+
+  String _getButtonText(String? status) {
+    if (status == 'cancelled') return "Đơn hàng đã huỷ";
+    if (status == 'delivered') return "Giao hàng thành công";
+    return "Theo dõi đơn hàng (Track Order)";
   }
 }
