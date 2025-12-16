@@ -4,7 +4,7 @@ import 'package:fast_food_app/widgets/order_details/location_route_card.dart';
 import 'package:fast_food_app/widgets/order_details/order_header_section.dart';
 import 'package:fast_food_app/widgets/order_details/order_list.dart';
 import 'package:fast_food_app/widgets/order_details/order_meta_info.dart';
-import 'package:fast_food_app/widgets/order_details/order_summary.dart';
+import 'package:fast_food_app/widgets/order_details/order_summary_section.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
 import 'package:provider/provider.dart';
