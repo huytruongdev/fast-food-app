@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fast_food_app/Core/Utils/format.dart';
 import 'package:fast_food_app/Core/models/order_item_model.dart';
 import 'package:fast_food_app/Core/models/order_model.dart';
+import 'package:fast_food_app/Core/models/store_model.dart';
 import 'package:fast_food_app/Core/providers/cart_provider.dart';
 import 'package:fast_food_app/pages/auth/screens/user_activities/order_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +27,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String _addressText = "Đang lấy vị trí..."; 
   bool _isLoadingLocation = true;
   
-  // Phí ship cố định (hoặc bạn có thể tính theo khoảng cách sau này)
-  final int _shippingFee = 0; 
+  late StoreModel _selectedStore;
+
+  final int _shippingFee = 15000; 
 
   @override
   void initState() {
     super.initState();
+    _selectedStore = storeModelList[0];
+    
     _getCurrentLocation(); 
   }
 
@@ -40,15 +44,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        // street: Số nhà + Tên đường
-        // subAdministrativeArea: Quận/Huyện
-        // administrativeArea: Tỉnh/Thành phố
         return "${place.street}, ${place.subAdministrativeArea}, ${place.administrativeArea}";
       }
-      return "$lat, $lng"; // Nếu không tìm thấy tên thì trả về toạ độ
+      return "$lat, $lng";
     } catch (e) {
       debugPrint("Lỗi Geocoding: $e");
-      return "$lat, $lng"; // Fallback về toạ độ nếu lỗi
+      return "$lat, $lng";
     }
   }
 
@@ -56,7 +57,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (!mounted) return;
     setState(() => _isLoadingLocation = true);
     
-    // Kiểm tra dịch vụ GPS có bật không
+    // 1. Kiểm tra GPS
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       if (!mounted) return;
@@ -67,7 +68,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
-    // Kiểm tra và xin quyền
+    // 2. Kiểm tra quyền
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -85,15 +86,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
       setState(() {
         _isLoadingLocation = false;
-        _addressText = "Quyền bị từ chối vĩnh viễn. Vào cài đặt để mở.";
+        _addressText = "Quyền bị từ chối vĩnh viễn.";
       });
       return;
     }
 
     try {
+      // 3. Lấy vị trí Cache (Hiện ngay lập tức)
       Position? lastPosition = await Geolocator.getLastKnownPosition();
       
       if (lastPosition != null && mounted) {
+        // Chuyển đổi toạ độ cache sang địa chỉ
         String address = await _getAddressFromLatLng(lastPosition.latitude, lastPosition.longitude);
         setState(() {
           _userLocation = LatLng(lastPosition.latitude, lastPosition.longitude);
@@ -101,6 +104,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         });
       }
 
+      // 4. Lấy vị trí Chính xác
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 10),
@@ -121,7 +125,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       setState(() => _isLoadingLocation = false);
       if (_userLocation == null) {
          ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("GPS phản hồi chậm. Vui lòng thử lại hoặc di chuyển ra thoáng hơn.")),
+          const SnackBar(content: Text("GPS phản hồi chậm. Vui lòng thử lại.")),
         );
       }
     } catch (e) {
@@ -129,6 +133,126 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
       setState(() => _isLoadingLocation = false);
     }
+  }
+
+  void _showStoreSelection() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Chọn cửa hàng gần bạn", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 15),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: storeModelList.length,
+                  separatorBuilder: (_, __) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final store = storeModelList[index];
+                    final isSelected = store.id == _selectedStore.id;
+                    return ListTile(
+                      leading: Icon(Icons.store, color: isSelected ? Colors.red : Colors.grey),
+                      title: Text(store.name, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                      subtitle: Text(store.address),
+                      trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.red) : null,
+                      onTap: () {
+                        setState(() {
+                          _selectedStore = store;
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _handlePlaceOrder(CartProvider cart) async {
+    if (_userLocation == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Chưa có vị trí giao hàng. Vui lòng bấm nút định vị.")),
+      );
+      return;
+    }
+
+    setState(() => _isPlacingOrder = true);
+
+    try {
+      final order = _createOrderObject(cart); 
+      
+      final body = jsonEncode(order.toJson());
+      
+      final String baseUrl = "http://10.0.2.2:3000/orders";
+      
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        headers: {"Content-Type": "application/json"},
+        body: body,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        final createdOrder = OrderModel.fromJson(responseData);
+        
+        cart.clearCart(widget.userId); 
+        
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => OrderDetailScreen(order: createdOrder)),
+            (route) => route.isFirst,
+          );
+        }
+      } else {
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lỗi Server: ${response.statusCode}")));
+      }
+
+    } catch (e) {
+      debugPrint("Lỗi đặt hàng: $e");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lỗi kết nối đến máy chủ")));
+    } finally {
+      if (mounted) setState(() => _isPlacingOrder = false);
+    }
+  }
+
+  OrderModel _createOrderObject(CartProvider cart) {
+    final pickup = _selectedStore.location; 
+    
+    final delivery = _userLocation!; 
+
+    List<OrderItem> orderItems = cart.items.map((item) {
+      return OrderItem(
+        productId: item.productId,
+        name: item.productData['name'],
+        quantity: item.quantity,
+        price: item.productData['price'],
+      );
+    }).toList();
+
+    return OrderModel(
+      userId: widget.userId,
+      items: orderItems,
+      totalQuantity: cart.totalQuantity,
+      price: cart.totalPrice.toInt() + _shippingFee,
+      
+      pickupLocation: pickup,
+      pickupAddress: _selectedStore.name,
+      
+      deliveryLocation: delivery, 
+      deliveryAddress: _addressText,
+      
+      status: "pending",
+    );
   }
 
   @override
@@ -150,6 +274,42 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- 1. CHỌN CỬA HÀNG (PICKUP) ---
+            const Text("Lấy hàng tại", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 10),
+            InkWell(
+              onTap: _showStoreSelection, // Mở Modal chọn cửa hàng
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.storefront, color: Colors.orange, size: 30),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_selectedStore.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                          const SizedBox(height: 4),
+                          Text(_selectedStore.address, style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // --- 2. ĐỊA CHỈ GIAO (DELIVERY) ---
             const Text("Giao đến", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 10),
             Container(
@@ -190,6 +350,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             const SizedBox(height: 24),
             
+            // --- 3. CHI TIẾT THANH TOÁN ---
             const Text("Chi tiết thanh toán", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 10),
             Container(
@@ -253,80 +414,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Text(title, style: TextStyle(color: Colors.grey[600])),
         Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
       ],
-    );
-  }
-
-  Future<void> _handlePlaceOrder(CartProvider cart) async {
-    if (_userLocation == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Chưa có vị trí giao hàng. Vui lòng bấm nút định vị.")),
-      );
-      return;
-    }
-
-    setState(() => _isPlacingOrder = true);
-
-    try {
-      final order = _createOrderObject(cart); 
-      
-      final body = jsonEncode(order.toJson());
-      
-      final String baseUrl = "http://10.0.2.2:3000/orders";
-      final response = await http.post(
-        Uri.parse(baseUrl),
-        headers: {"Content-Type": "application/json"},
-        body: body,
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData = jsonDecode(response.body);
-        final createdOrder = OrderModel.fromJson(responseData);
-        
-        cart.clearCart(widget.userId); 
-        
-        if (mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => OrderDetailScreen(order: createdOrder)),
-            (route) => route.isFirst,
-          );
-        }
-      } else {
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lỗi Server: ${response.statusCode}")));
-      }
-
-    } catch (e) {
-      debugPrint("Lỗi đặt hàng: $e");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lỗi kết nối đến máy chủ")));
-    } finally {
-      if (mounted) setState(() => _isPlacingOrder = false);
-    }
-  }
-
-  OrderModel _createOrderObject(CartProvider cart) {
-    final pickup = LatLng(10.800669, 106.661126); 
-    
-    final delivery = _userLocation!; 
-
-    List<OrderItem> orderItems = cart.items.map((item) {
-      return OrderItem(
-        productId: item.productId,
-        name: item.productData['name'],
-        quantity: item.quantity,
-        price: item.productData['price'],
-      );
-    }).toList();
-
-    return OrderModel(
-      userId: widget.userId,
-      items: orderItems,
-      totalQuantity: cart.totalQuantity,
-      price: cart.totalPrice.toInt() + _shippingFee,
-      pickupLocation: pickup,
-      deliveryLocation: delivery, 
-      pickupAddress: "Cửa hàng (CN Cầu vượt Cộng Hoà)",
-      deliveryAddress: _addressText,
-      status: "pending",
     );
   }
 }
