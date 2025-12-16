@@ -106,46 +106,47 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        widget.products.name,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            widget.products.name,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Text(
+                              widget.products.specialItems,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                                letterSpacing: 1.1,
+                              ),
                             ),
                           ),
-                          Text(
-                            widget.products.specialItems,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black,
-                              letterSpacing: 1.1,
+                          RichText(
+                            text: TextSpan(
+                              text: formatVND(widget.products.price.toInt()),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                              text: formatVND(widget.products.price.toInt()),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
+
                   SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,7 +196,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         elevation: 0,
         label: MaterialButton(
           onPressed: () async {
-            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
             String? userId = prefs.getString('userId');
 
             if (userId == null) {
@@ -205,7 +207,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 type: SnackbarType.error,
                 description: "Vui lòng đăng nhập để thêm vào giỏ hàng!",
               );
-              return; 
+              return;
             }
 
             if (!context.mounted) return;
