@@ -17,7 +17,7 @@ class TrackOrderScreen extends StatelessWidget {
       case 'shipping':
         return Colors.blue;
       case 'arrived':
-        return Colors.red; // Màu nổi bật để khách chú ý
+        return Colors.red;
       case 'delivered':
         return Colors.green;
       default:
