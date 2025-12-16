@@ -127,7 +127,6 @@ class CartProvider extends ChangeNotifier {
   // --- 4. REMOVE ITEM (XÓA 1 MÓN) ---
   Future<void> removeItem(String productId, String userId) async {
     try {
-      // API Backend mới dùng productId để xóa
       final res = await http.delete(
         Uri.parse("$baseUrl/carts/remove"), 
         headers: {"Content-Type": "application/json"},
