@@ -8,6 +8,7 @@ import 'package:fast_food_app/pages/auth/screens/user_activities/order_detail_sc
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,6 +34,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.initState();
     _getCurrentLocation(); 
   }
+
+  Future<String> _getAddressFromLatLng(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        // street: Số nhà + Tên đường
+        // subAdministrativeArea: Quận/Huyện
+        // administrativeArea: Tỉnh/Thành phố
+        return "${place.street}, ${place.subAdministrativeArea}, ${place.administrativeArea}";
+      }
+      return "$lat, $lng"; // Nếu không tìm thấy tên thì trả về toạ độ
+    } catch (e) {
+      debugPrint("Lỗi Geocoding: $e");
+      return "$lat, $lng"; // Fallback về toạ độ nếu lỗi
+    }
+  }
+
   Future<void> _getCurrentLocation() async {
     if (!mounted) return;
     setState(() => _isLoadingLocation = true);
@@ -75,10 +94,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       Position? lastPosition = await Geolocator.getLastKnownPosition();
       
       if (lastPosition != null && mounted) {
+        String address = await _getAddressFromLatLng(lastPosition.latitude, lastPosition.longitude);
         setState(() {
           _userLocation = LatLng(lastPosition.latitude, lastPosition.longitude);
-          _addressText = "${lastPosition.latitude}, ${lastPosition.longitude}"; 
-          // Nếu có thư viện geocoding, gọi hàm chuyển đổi tên đường ở đây
+          _addressText = address;
         });
       }
 
@@ -89,9 +108,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       
       if (!mounted) return;
 
+      String address = await _getAddressFromLatLng(position.latitude, position.longitude);
+
       setState(() {
         _userLocation = LatLng(position.latitude, position.longitude);
-        _addressText = "${position.latitude}, ${position.longitude}"; 
+        _addressText = address; 
         _isLoadingLocation = false;
       });
 
