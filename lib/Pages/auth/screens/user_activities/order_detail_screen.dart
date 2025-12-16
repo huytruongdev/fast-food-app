@@ -1,6 +1,5 @@
 import 'package:fast_food_app/Core/providers/order_provider.dart';
 import 'package:fast_food_app/pages/auth/screens/app_main_screen.dart';
-import 'package:fast_food_app/pages/auth/screens/profile_screen.dart';
 import 'package:fast_food_app/widgets/order_details/order_header_section.dart';
 import 'package:fast_food_app/widgets/order_details/order_list.dart';
 import 'package:fast_food_app/widgets/order_details/order_summary.dart';
