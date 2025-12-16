@@ -36,7 +36,6 @@ class CartProvider extends ChangeNotifier {
       
       if (res.statusCode == 200) {
         List data = jsonDecode(res.body);
-        debugPrint(data.toString());
         _items = data.map((e) => CartItem.fromJson(e)).toList();
         notifyListeners();
       } else {
@@ -55,7 +54,6 @@ class CartProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         reset();
-        debugPrint("✅ Cart cleared successfully");
       } else {
         debugPrint("❌ Failed to clear cart: ${response.body}");
       }
@@ -64,7 +62,6 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  // --- 3. ADD / UPDATE ITEM ---
   Future<void> addCart(
     String userId,
     String productId,
@@ -124,7 +121,6 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  // --- 4. REMOVE ITEM (XÓA 1 MÓN) ---
   Future<void> removeItem(String productId, String userId) async {
     try {
       final res = await http.delete(

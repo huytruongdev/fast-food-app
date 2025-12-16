@@ -33,7 +33,7 @@ class CartBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Total Price", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                const Text("Tổng tiền", style: TextStyle(color: Colors.grey, fontSize: 12)),
                 Text(
                   formatVND(totalPrice.toInt()),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: red),
@@ -52,13 +52,7 @@ class CartBar extends StatelessWidget {
                   ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                   : Row(
                       children: [
-                        const Text("Checkout", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)), //TODO
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(10)),
-                          child: Text("$totalQuantity", style: const TextStyle(color: Colors.white, fontSize: 12)),
-                        )
+                        const Text("Thanh toán", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                       ],
                     ),
             ),
